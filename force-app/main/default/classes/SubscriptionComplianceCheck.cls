@@ -25,27 +25,30 @@ global class SubscriptionComplianceCheck implements Database.Batchable<sObject> 
             Set<String> parentIds = new Set<String>();
             List<SBQQ_Subscription__c> subsImmoList = new List<SBQQ_Subscription__c>();
             List<SBQQ_Subscription__c> subsPubList = new List<SBQQ_Subscription__c>();
-            for(SBQQ_Subscription__c sub : scope) {
-                
+            List<SBQQ_Subscription__c> subsConformeList = new List<SBQQ_Subscription__c>();
+            for(SBQQ_Subscription__c sub : scope) {    
                 //enlever les DML opérations dans les boucles
                if (sub.ComplianceProcess__c == Constants.IMMO_NEUF) {
                     subsImmoList.add(sub);
-                    if(sub.SBQQ_RequiredById__c != null){
-                        parentIds.add(sub.SBQQ_RequiredById__c);
-                    }
                 }
                 if(sub.ComplianceProcess__c == Constants.PUB){
                     subsPubList.add(sub);
-                    if(sub.SBQQ_RequiredById__c != null){
-                        parentIds.add(sub.SBQQ_RequiredById__c);
-                    }
                 }
             }
             if(!subsImmoList.isEmpty()){
                 setConformiteImmoNeuf(subsImmoList);
+                subsConformeList.addAll(subsImmoList);
             }
             if(!subsPubList.isEmpty()){
                 setConformitePub(subsPubList);
+                subsConformeList.addAll(subsPubList);
+            }
+            if(!subsConformeList.isEmpty()){
+                for(SBQQ_Subscription__c sub :subsConformeList ){
+                    if(sub.SBQQ_RequiredById__c != null && sub.Souscription_Conforme__c ){
+                        parentIds.add(sub.SBQQ_RequiredById__c);
+                    }  
+                }
             }
             if(!parentIds.isEmpty()){
                 setParentConforme(parentIds);
@@ -74,7 +77,6 @@ global class SubscriptionComplianceCheck implements Database.Batchable<sObject> 
     //changer le type en void pour éviter de faire des opération DML dans les boucles
     private void setConformiteImmoNeuf(List<SBQQ_Subscription__c> subsList) {
         for(SBQQ_Subscription__c sub : subsList){
-            System.debug('LeadPhone : '+sub.LeadPhone__c);
             if(sub.PromoterDescription__c != null && sub.FlowType__c != null && sub.ProductWorkflow__c != null
             && sub.ContractEmail__c != null && sub.CompanySiret__c != null && sub.CompanyName__c != null
             && sub.CompanyAddressStreet__c != null && sub.CompanyAddressZipcode__c != null && sub.CompanyAddressCity__c != null

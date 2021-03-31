@@ -3,6 +3,7 @@ Création d'une méthode testSetup pour y créer les test data
 Création d'une nouvelle méthode pour tester la nouvelle fonctionnalité
 Création de deux méthodes pour tester les scénarios négatifs
 Création d'une classe Constants pour storer tous les constants dont on aura besoin
+Ajouter un parent pour tester la logique
 Code écrit par : Hemdene Ben Hammouda*/
 @isTest
 private class SubscriptionComplianceCheckTest {
@@ -106,7 +107,7 @@ private class SubscriptionComplianceCheckTest {
         
         SBQQ_Subscription__c subPubFinal = [Select Id,MissingInformations__c from SBQQ_Subscription__c where ComplianceProcess__c = :Constants.PUB limit 1];
         System.assertEquals(Constants.MISSING_INFO,subPubFinal.MissingInformations__c);
-        System.assertNotEquals(3, [SELECT Id FROM SBQQ_Subscription__c WHERE Souscription_Conforme__c = true].size());
+        System.assertEquals(1, [SELECT Id FROM SBQQ_Subscription__c WHERE Souscription_Conforme__c = true].size());
     }
 
     @isTest 
@@ -123,7 +124,7 @@ private class SubscriptionComplianceCheckTest {
         
         SBQQ_Subscription__c subImmoFinal = [Select Id,MissingInformations__c from SBQQ_Subscription__c where ComplianceProcess__c = :Constants.IMMO_NEUF limit 1];
         System.assertEquals(Constants.MISSING_INFO,subImmoFinal.MissingInformations__c);
-        System.assertNotEquals(3, [SELECT Id FROM SBQQ_Subscription__c WHERE Souscription_Conforme__c = true].size());
+        System.assertEquals(2, [SELECT Id FROM SBQQ_Subscription__c WHERE Souscription_Conforme__c = true].size());
 
     }
 }
