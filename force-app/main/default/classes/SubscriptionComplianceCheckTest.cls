@@ -9,6 +9,7 @@ Code écrit par : Hemdene Ben Hammouda*/
 private class SubscriptionComplianceCheckTest {
 
 // move to constants class
+// adding some comments
 
    @testSetup 
     static void setup() {
